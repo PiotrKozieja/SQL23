@@ -1,0 +1,96 @@
+--1
+select id_wykladowcy, imie, nazwisko,liczba_godzin, nazwa_wykladu
+from wyklady inner join pracownicy on
+	wyklady.id_wykladowcy = pracownicy.id_pracownika
+order by nazwa_wykladu, nazwisko, imie
+
+--2
+select *
+from studenci
+where id_studenta in (select id_studenta
+						from studenci_wyklady
+						where id_wykladu in(select id_wykladu
+											from wyklady
+											where nazwa_wykladu = 'statystyka'))
+order by nazwisko,imie
+
+--3
+select imie, nazwisko, data_egzaminu
+from studenci right join oceny_studentow on studenci.id_studenta = oceny_studentow.id_studenta
+order by data_egzaminu
+--4
+select imie, nazwisko, stopien_tytul
+from wykladowcy left join pracownicy on wykladowcy.id_wykladowcy = pracownicy.id_pracownika
+where katedra = 'Katedra Informatyki'
+order by nazwisko
+--5
+select imie, nazwisko, katedra
+from wykladowcy full join pracownicy on wykladowcy.id_wykladowcy = pracownicy.id_pracownika
+order by nazwisko, imie desc
+---6
+select imie, nazwisko, id_pracownika
+from wykladowcy left join pracownicy on wykladowcy.id_wykladowcy = pracownicy.id_pracownika
+except
+select imie, nazwisko, id_pracownika
+from wyklady left join pracownicy on wyklady.id_wykladowcy = pracownicy.id_pracownika
+order by nazwisko, imie desc
+--7
+select imie, nazwisko, nazwa_wykladu
+from (studenci left join studenci_wyklady on studenci.id_studenta = studenci_wyklady.id_studenta) left join wyklady on studenci_wyklady.id_wykladu = wyklady.id_wykladu
+order by nazwa_wykladu desc
+--8
+select sum(stawka*liczba_godzin)
+from (wyklady left join wykladowcy on wyklady.id_wykladowcy = wykladowcy.id_wykladowcy) left join stopnie_tytuly on wykladowcy.stopien_tytul = stopnie_tytuly.stopien_tytul
+--9
+select id_wykladu
+from wyklady
+except
+select id_wykladu
+from studenci_wyklady
+
+---9
+select id_wykladu, nazwa_wykladu
+from wyklady
+except
+select studenci_wyklady.id_wykladu, nazwa_wykladu
+from studenci_wyklady left join wyklady on studenci_wyklady.id_wykladu = wyklady.id_wykladu
+
+--10
+select nazwa_wykladu, id_wykladu,liczba_godzin, nazwisko,katedra
+from (wyklady left join wykladowcy on wyklady.id_wykladowcy = wykladowcy.id_wykladowcy)left join pracownicy on wykladowcy.id_wykladowcy = pracownicy.id_pracownika
+where nazwa_wykladu like 'Historia%'
+---11
+select nazwisko, imie, PESEL ,nazwa_wykladu
+from (wyklady left join pracownicy on wyklady.id_wykladowcy = id_pracownika)
+order by PESEL
+
+---12
+select id_pracownika,imie, nazwisko
+from pracownicy
+except
+select id_pracownika,imie, nazwisko
+from wykladowcy left join pracownicy on wykladowcy.id_wykladowcy = pracownicy.id_pracownika
+order by nazwisko desc, imie asc
+
+--13
+select id_studenta
+from oceny_studentow
+where data_egzaminu = '2017-04-12'
+intersect
+select id_studenta
+from oceny_studentow
+where data_egzaminu = '2017-10-11'
+----14
+select id_studenta, nazwisko
+from studenci
+except
+select studenci.id_studenta, nazwisko
+from oceny_studentow left join studenci on oceny_studentow.id_studenta = studenci.id_studenta
+---15
+--ez
+---16
+select wyklady.id_wykladu, nazwa_wykladu
+from studenci_wyklady left join wyklady on studenci_wyklady.id_wykladu = wyklady.id_wykladu
+except
+select wyklady.id_wykladu, nazwa_wykladu
+from oceny_studentow left join wyklady on oceny_studentow.id_wykladu = wyklady.id_wykladu

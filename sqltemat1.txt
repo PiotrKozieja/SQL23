@@ -1,0 +1,34 @@
+select  nr_grupy,  count(id_studenta)
+from studenci
+group by nr_grupy
+---
+select nr_grupy, count (id_studenta) as LiczbaS
+from studenci
+group by nr_grupy
+having  count (id_studenta)>=3
+order by LiczbaS
+---5
+select imie, nazwisko, avg(ocena) as srednia
+from oceny_studentow o left join studenci s on o.id_studenta = s.id_studenta
+where nazwisko = 'nowakowski'
+group by imie, nazwisko
+order by nazwisko desc, imie desc
+
+---6
+select nazwisko, imie, avg(ocena) as srednia
+from (wyklady w left join pracownicy p on w.id_wykladowcy = p.id_pracownika) left join oceny_studentow o on w.id_wykladu = o.id_wykladu
+group by nazwisko,imie
+order by srednia desc
+
+---7
+select nazwisko,imie, count(nazwa_wykladu) as Wyk
+from (studenci_wyklady s left join studenci t on s.id_studenta= t.id_studenta) left join wyklady w on s.id_wykladu = w.id_wykladu
+group by nazwisko,imie
+having count(nazwa_wykladu) =1
+
+
+---8
+select o.ocena, COUNT(id_studenta)
+from oceny o left join oceny_studentow s on o.ocena = s.ocena
+group by o.ocena
+order by ocena desc
